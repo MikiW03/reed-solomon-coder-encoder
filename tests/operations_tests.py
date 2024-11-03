@@ -33,8 +33,12 @@ class TestOperations(unittest.TestCase):
         self.assertEqual(p1 * p2, Polynomial([1, 1, 1, 1, 0, 0]))
         self.assertEqual(p3 * p4, Polynomial([1, 1, 1, 0]))
 
-    def test__inverse(self):
+    def test_inverse(self):
         Polynomial.irreducible_poly = Polynomial([1, 0, 0, 0, 0, 1, 1])
+
+        p1 = Polynomial([1, 1])
+
+        self.assertEqual(p1.get_inverse(), Polynomial([1,1,1,1,1,0]))
         pass
 
 
