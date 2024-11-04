@@ -157,13 +157,16 @@ class Polynomial:
             return Polynomial(prog_values[1])
 
     def __truediv__(self, other):
-        # TODO dzielenie
         return self * Polynomial(other.get_multiplicative_inverse())
 
     def __add__(self, other):
         max_len = max(len(self.coefficients), len(other.coefficients))
-        result = [(self.coefficients[i] if i < len(self.coefficients) else 0) ^
-                  (other.coefficients[i] if i < len(other.coefficients) else 0)
+
+        coefficients1 = self.get_filled(max_len).coefficients
+        coefficients2 = other.get_filled(max_len).coefficients
+
+        result = [(coefficients1[i] if i < len(coefficients1) else 0) ^
+                  (coefficients2[i] if i < len(coefficients2) else 0)
                   for i in range(max_len)]
         return Polynomial(result)
 

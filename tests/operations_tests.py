@@ -10,12 +10,19 @@ class TestOperations(unittest.TestCase):
 
         p1 = Polynomial([1, 0])
         p2 = Polynomial([0, 1])
+        self.assertEqual(p1 + p2, Polynomial([1, 1]))
 
         p3 = Polynomial([1, 0, 1, 0, 1, 1])
         p4 = Polynomial([1, 1, 0, 1, 1, 0])
-
-        self.assertEqual(p1 + p2, Polynomial([1, 1]))
         self.assertEqual(p3 + p4, Polynomial([0, 1, 1, 1, 0, 1]))
+
+        p5 = Polynomial([1, 0, 1, 0])
+        p6 = Polynomial([1, 0, 1])
+        self.assertEqual(p5 + p6, Polynomial([1, 1, 1, 1]))
+
+        p7 = Polynomial([1, 0])
+        p8 = Polynomial([1, 0, 0])
+        self.assertEqual(p7 + p8, Polynomial([1, 1, 0]))
 
     def test_division(self):
         Polynomial.irreducible_poly = Polynomial([1, 0, 0, 0, 0, 1, 1])
@@ -26,20 +33,17 @@ class TestOperations(unittest.TestCase):
 
         p1 = Polynomial([1, 1, 0, 1])
         p2 = Polynomial([1, 0, 1, 1])
+        self.assertEqual(p1 * p2, Polynomial([1, 1, 1, 1, 0, 0]))
 
         p3 = Polynomial([1, 0, 1, 0, 1, 1])
         p4 = Polynomial([1, 1, 0, 1, 1, 0])
-
-        self.assertEqual(p1 * p2, Polynomial([1, 1, 1, 1, 0, 0]))
         self.assertEqual(p3 * p4, Polynomial([1, 1, 1, 0]))
 
     def test_inverse(self):
         Polynomial.irreducible_poly = Polynomial([1, 0, 0, 0, 0, 1, 1])
 
         p1 = Polynomial([1, 1])
-
-        self.assertEqual(p1.get_inverse(), Polynomial([1,1,1,1,1,0]))
-        pass
+        self.assertEqual(p1.get_inverse(), Polynomial([1, 1, 1, 1, 1, 0]))
 
 
 if __name__ == '__main__':
