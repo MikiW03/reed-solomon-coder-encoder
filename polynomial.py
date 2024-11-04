@@ -58,7 +58,7 @@ class Polynomial:
 
         return quotient, remainder
 
-    def polynomial_to_string(self):
+    def to_string(self):
         poly = self.coefficients
         if len(poly) == 0:
             return "0"
@@ -78,28 +78,20 @@ class Polynomial:
         return " + ".join(terms)
 
     def get_inverse(self):
-        # Representations of the polynomials
         dividend = self.irreducible_poly.coefficients
         divisor = self.coefficients
 
         if divisor == [0]:
             return None
         elif divisor == [1]:
-            return 1
-
-        # print(f"\nDividend: {(6 - len(dividend)) * [0] + dividend} - {self.polynomial_to_string(dividend)}")
-        # print(f"Divisor: {divisor} - {self.polynomial_to_string(divisor)}")
+            return Polynomial([1])
 
         matter = []
 
-        # Perform the division
         quotient, remainder = self.binary_vector_division(dividend, divisor)
         matter.append(((6 - len(quotient)) * [0]) + quotient)
 
         remainders = [remainder]
-
-        # print(f"\nQuotient: {(6 - len(quotient)) * [0] + quotient} - {self.polynomial_to_string(quotient)}")
-        # print(f"Remainder: {remainder} - {self.polynomial_to_string(remainder)}")
 
         while remainder != [1]:
             dividend = divisor
@@ -107,57 +99,42 @@ class Polynomial:
             quotient, remainder = self.binary_vector_division(dividend, divisor)
             matter.append(((6 - len(quotient)) * [0]) + quotient)
             remainders.append(remainder)
-            # print(f"\nQuotient: {(6 - len(quotient)) * [0] + quotient} - {self.polynomial_to_string(quotient)}")
-            # print(f"Remainder: {remainder} - {self.polynomial_to_string(remainder)}")
 
         if len(remainders) > 1:
             matter.append(((6 - len(remainders[-2])) * [0]) + remainders[-2])
 
-        # print(f"{matter}\n")
-
         zerob = [0, 0, 0, 0, 0, 0]
         oneb = [0, 0, 0, 0, 0, 1]
 
-        final_val = zerob
+        final_val = Polynomial(zerob)
 
         if len(matter) == 1:
-            for ind in range(len(matter[0])):
-                final_val[ind] ^= matter[0][ind]
-            # print(f"Inverse element: {final_val} - {self.polynomial_to_string(final_val)}")
-            return Polynomial(final_val)
+            final_val += Polynomial(matter[0])
+
+            return final_val
         elif len(matter) == 3:
-            for ind in range(len(matter[0])):
-                final_val[ind] ^= matter[0][ind]
-            final_val = Polynomial(final_val) * Polynomial(matter[1])
-            for ind in range(len(matter[0])):
-                final_val.coefficients[ind] ^= oneb[ind]
-            # print(f"Inverse element: {final_val} - {self.polynomial_to_string(final_val.coefficients)}")
-            return Polynomial(final_val)
+            final_val += Polynomial(matter[0])
+            final_val *= Polynomial(matter[1])
+            final_val += Polynomial(oneb)
+
+            return final_val
         elif len(matter) > 3:
             prog_values = []
-            for ind in range(len(matter[0])):
-                final_val[ind] ^= matter[0][ind]
+            final_val += Polynomial(matter[0])
             prog_values.append(final_val)
-
-            final_val = Polynomial(final_val) * Polynomial(matter[1])
-            final_val = ((6 - len(final_val.coefficients)) * [0]) + final_val.coefficients
-            for ind in range(len(matter[0])):
-                final_val[ind] ^= oneb[ind]
+            final_val *= Polynomial(matter[1])
+            final_val += Polynomial(oneb)
             prog_values.append(final_val)
 
             for you in matter[2:len(matter) - 1]:
-                final_val = Polynomial(prog_values[1]) * Polynomial(you)
-                final_val = ((6 - len(final_val.coefficients)) * [0]) + final_val.coefficients
-                for ind in range(len(you)):
-                    prog_values[0][ind] ^= final_val[ind]
-
+                final_val = prog_values[1] * Polynomial(you)
+                prog_values[0] += final_val
                 prog_values[1], prog_values[0] = prog_values[0], prog_values[1]
 
-            # print(f"Inverse element: {prog_values[1]} - {self.polynomial_to_string(prog_values[1])}")
-            return Polynomial(prog_values[1])
+            return prog_values[1]
 
     def __truediv__(self, other):
-        return self * Polynomial(other.get_multiplicative_inverse())
+        return None if self is None or other.get_inverse() is None else self * other.get_inverse()
 
     def __add__(self, other):
         max_len = max(len(self.coefficients), len(other.coefficients))
@@ -178,7 +155,7 @@ class Polynomial:
             if b & 1:
                 result ^= a
             a <<= 1
-            if a & 2**self.m:
+            if a & 2 ** self.m:
                 a ^= self.irreducible_poly.get_value()
             b >>= 1
 
