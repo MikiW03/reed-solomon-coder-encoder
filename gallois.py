@@ -23,3 +23,12 @@ class Gallois:
             powers.append(current)
 
         return powers
+
+    def generate_generative_polynomial(self):
+        generator_poly = Polynomial([1])
+
+        for i in range(1, 2 * self.t):
+            term = self.alpha_powers[0] + self.alpha_powers[i]
+            generator_poly *= term
+
+        return generator_poly
