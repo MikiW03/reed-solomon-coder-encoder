@@ -5,9 +5,11 @@ import unittest
 
 
 class TestOperations(unittest.TestCase):
-    def test_addition(self):
+    def __init__(self, *args, **kwargs):
+        super(TestOperations, self).__init__(*args, **kwargs)
         Polynomial.irreducible_poly = Polynomial([1, 0, 0, 0, 0, 1, 1])
 
+    def test_addition(self):
         p1 = Polynomial([1, 0])
         p2 = Polynomial([0, 1])
         self.assertEqual(p1 + p2, Polynomial([1, 1]))
@@ -25,8 +27,6 @@ class TestOperations(unittest.TestCase):
         self.assertEqual(p7 + p8, Polynomial([1, 1, 0]))
 
     def test_division(self):
-        Polynomial.irreducible_poly = Polynomial([1, 0, 0, 0, 0, 1, 1])
-
         p1 = Polynomial([1, 0, 0, 0, 0, 1])
         p2 = Polynomial([1, 1, 0, 1, 0, 1])
         self.assertEqual(p1/p2, Polynomial([1, 0, 1, 1, 1, 1]))
@@ -44,8 +44,6 @@ class TestOperations(unittest.TestCase):
         self.assertEqual(p5 / p7, p5)
 
     def test_multiplication(self):
-        Polynomial.irreducible_poly = Polynomial([1, 0, 0, 0, 0, 1, 1])
-
         p1 = Polynomial([1, 1, 0, 1])
         p2 = Polynomial([1, 0, 1, 1])
         self.assertEqual(p1 * p2, Polynomial([1, 1, 1, 1, 0, 0]))
@@ -59,8 +57,6 @@ class TestOperations(unittest.TestCase):
         self.assertEqual(p5 * p6, Polynomial([1, 1, 1, 0, 1, 0]))
 
     def test_inverse(self):
-        Polynomial.irreducible_poly = Polynomial([1, 0, 0, 0, 0, 1, 1])
-
         p1 = Polynomial([1, 1])
         self.assertEqual(p1.get_inverse(), Polynomial([1, 1, 1, 1, 1, 0]))
 
@@ -75,13 +71,4 @@ class TestOperations(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    M = 6
-    T = 12
-    IRREDUCIBLE_POLY = Polynomial([1, 0, 0, 0, 0, 1, 1])
-
-    Gallois.m = Polynomial.m = M
-    Gallois.t = Polynomial.t = T
-    Gallois.irreducible_poly = Polynomial.irreducible_poly = IRREDUCIBLE_POLY
-
-    gallois = Gallois()
     unittest.main()
