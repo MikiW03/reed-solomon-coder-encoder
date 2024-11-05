@@ -75,6 +75,7 @@ class Polynomial:
                 else:
                     terms.append(f"x^{i}")
 
+        if len(terms) == 0: return "0"
         return " + ".join(terms)
 
     def get_inverse(self):
